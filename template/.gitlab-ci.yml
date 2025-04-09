@@ -1,0 +1,269 @@
+image: registry.altamedia.vn/aquafina-ripplemaker/cms-aquafina-ripplemaker:ci
+
+stages:
+  - install
+  - build
+  - release
+  - deploy
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG} # only apply for current branch
+  paths:
+    - node_modules/
+  policy: pull
+
+#docker build -t registry.altamedia.vn/ravolution/ravolution-cms .
+# install npm dependencies so it'll be cache in subsequent jobs
+# note: we can't do this in linting stage as in that stage, 2 jobs run concurrently and both need node_modules
+install_dependencies:
+  stage: install
+  script:
+    - echo  ${CI_REGISTRY_USER} ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - yarn
+  cache:
+    key: ${CI_COMMIT_REF_SLUG} # only apply for current branch
+    paths:
+      - node_modules/
+    policy: pull-push
+  artifacts:
+    paths:
+      - 'node_modules'
+    expire_in: '7 days'
+  only:
+    changes:
+      - package.json
+      - yarn.lock
+      - package-lock.json
+
+build_development:
+  dependencies:
+    - install_dependencies
+  environment:
+    name: development
+    url: https://aquarm-cms.dev.altasoftware.vn
+  stage: build
+  only:
+    - develop
+  script:
+    - "[ ! -d './node_modules' ] && yarn"
+    - cp $ENV_FILE .env
+    - npm run build
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --tag $CI_REGISTRY_IMAGE:v-$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:v-$CI_COMMIT_SHORT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:v-$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:develop
+    - docker push $CI_REGISTRY_IMAGE:develop
+
+deploy_development:
+  dependencies: []
+  stage: deploy
+  cache: {}
+  environment:
+    name: development
+    url: https://aquarm-cms.dev.altasoftware.vn
+  tags:
+    - kcn-dev
+  variables:
+    # We do not need the source code here. Just playing with Docker.
+    GIT_STRATEGY: none
+  only:
+    - develop
+  script:
+    # chạy ssh-agent tương ứng với Gitlab Runner hiện tại
+    - eval $(ssh-agent -s)
+
+    # thêm nội dung của biến SSH_PRIVATE_KEY vào agent store
+    - bash -c 'ssh-add <(echo "$SSH_KEY")'
+
+    # tạo folder ~/.ssh
+    - mkdir -p ~/.ssh
+
+    # Scan lấy SSH Host key cho địa chỉ IP server
+    # Được kết quả bao nhiêu thì thêm vào file known_hosts
+    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+
+    # Sửa lại quyền của file known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    # Thực hiện SSH vào server, login vào Registry, chuyển tới folder project
+    # Down project, pull image về, up project và xoá đi image cũ
+    - >
+      ssh $SSH_USER@$SSH_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
+      ${CI_REGISTRY}; cd ${PATH_TO_PROJECT_DEV}; docker-compose down; docker pull
+      ${CI_REGISTRY_IMAGE}:develop; docker-compose up -d; docker image prune -f;"
+
+
+build_staging:
+  dependencies:
+    - install_dependencies
+  environment:
+    name: staging
+    url: https://aquarm-cms.unigons.vn
+  stage: build
+  only:
+    - main
+    - master
+  script:
+    - "[ ! -d './node_modules' ] && yarn"
+    - cp $ENV_FILE_STA .env
+    - npm run build
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --tag $CI_REGISTRY_IMAGE:v-$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:v-$CI_COMMIT_SHORT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:v-$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:staging
+    - docker push $CI_REGISTRY_IMAGE:staging
+
+deploy_staging:
+  dependencies: []
+  stage: deploy
+  cache: {}
+  environment:
+    name: staging
+    url: https://aquarm-cms.unigons.vn
+  tags:
+    - kcn
+  variables:
+    # We do not need the source code here. Just playing with Docker.
+    GIT_STRATEGY: none
+  only:
+    - main
+    - master
+  script:
+    # chạy ssh-agent tương ứng với Gitlab Runner hiện tại
+    - eval $(ssh-agent -s)
+
+    # thêm nội dung của biến SSH_PRIVATE_KEY vào agent store
+    - bash -c 'ssh-add <(echo "$SSH_KEY")'
+
+    # tạo folder ~/.ssh
+    - mkdir -p ~/.ssh
+
+    # Scan lấy SSH Host key cho địa chỉ IP server
+    # Được kết quả bao nhiêu thì thêm vào file known_hosts
+    - ssh-keyscan -H $SSH_HOST_STA >> ~/.ssh/known_hosts
+
+    # Sửa lại quyền của file known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    # Thực hiện SSH vào server, login vào Registry, chuyển tới folder project
+    # Down project, pull image về, up project và xoá đi image cũ
+    - >
+      ssh $SSH_USER@$SSH_HOST_STA "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
+      ${CI_REGISTRY}; cd ${PATH_TO_PROJECT_DEV}; docker-compose down; docker pull
+      ${CI_REGISTRY_IMAGE}:staging; docker-compose up -d; docker image prune -f;"
+
+# build_uat:
+#   dependencies:
+#     - install_dependencies
+#   environment:
+#     name: uat
+#     url: https://uat-heineken-robot.dev.altasoftware.vn/
+#   stage: build
+#   only:
+#     - develop
+#   script:
+#     - "[ ! -d './node_modules' ] && yarn"
+#     - cp $ENV_FILE_UAT .env.production
+#     - npm run build
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build --tag $CI_REGISTRY_IMAGE:a-$CI_COMMIT_SHORT_SHA .
+#     - docker push $CI_REGISTRY_IMAGE:a-$CI_COMMIT_SHORT_SHA
+#     - docker tag $CI_REGISTRY_IMAGE:a-$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:uat
+#     - docker push $CI_REGISTRY_IMAGE:uat
+
+# deploy_uat:
+#   dependencies:
+#     - build_uat
+#   stage: deploy
+#   cache: {}
+#   environment:
+#     name: uat
+#     url: https://uat-heineken-robot.dev.altasoftware.vn/
+#   tags:
+#     - kcn-dev
+#   variables:
+#     # We do not need the source code here. Just playing with Docker.
+#     GIT_STRATEGY: none
+#   only:
+#     - develop
+#   script:
+#     # chạy ssh-agent tương ứng với Gitlab Runner hiện tại
+#     - eval $(ssh-agent -s)
+
+#     # thêm nội dung của biến SSH_PRIVATE_KEY vào agent store
+#     - bash -c 'ssh-add <(echo "$SSH_KEY")'
+
+#     # tạo folder ~/.ssh
+#     - mkdir -p ~/.ssh
+
+#     # Scan lấy SSH Host key cho địa chỉ IP server
+#     # Được kết quả bao nhiêu thì thêm vào file known_hosts
+#     - ssh-keyscan -H $SSH_HOST_UAT >> ~/.ssh/known_hosts
+
+#     # Sửa lại quyền của file known_hosts
+#     - chmod 644 ~/.ssh/known_hosts
+
+#     # Thực hiện SSH vào server, login vào Registry, chuyển tới folder project
+#     # Down project, pull image về, up project và xoá đi image cũ
+#     - >
+#       ssh $SSH_USER@$SSH_HOST_UAT "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
+#       ${CI_REGISTRY}; cd ${PATH_TO_PROJECT_UAT}; docker-compose down; docker pull
+#       ${CI_REGISTRY_IMAGE}:uat; docker-compose up -d; docker image prune -f;"
+
+# build_production:
+#   dependencies:
+#     - install_dependencies
+#   environment:
+#     name: production
+#     url: https://hca.altacloud.biz/
+#   stage: build
+#   only:
+#     - master
+#   script:
+#     - "[ ! -d './node_modules' ] && yarn"
+#     - cp $ENV_FILE_PROD .env.production
+#     - npm run build
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build --tag $CI_REGISTRY_IMAGE:p-$CI_COMMIT_SHORT_SHA .
+#     - docker push $CI_REGISTRY_IMAGE:p-$CI_COMMIT_SHORT_SHA
+#     - docker tag $CI_REGISTRY_IMAGE:p-$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:latest
+#     - docker push $CI_REGISTRY_IMAGE:latest
+
+# deploy_production:
+#   dependencies:
+#     - build_production
+#   stage: deploy
+#   cache: {}
+#   environment:
+#     name: production
+#     url: https://hca.altacloud.biz/
+#   tags:
+#     - kcn
+#   variables:
+#     # We do not need the source code here. Just playing with Docker.
+#     GIT_STRATEGY: none
+#   only:
+#     - master
+#   script:
+#     # chạy ssh-agent tương ứng với Gitlab Runner hiện tại
+#     - eval $(ssh-agent -s)
+
+#     # thêm nội dung của biến SSH_PRIVATE_KEY vào agent store
+#     - bash -c 'ssh-add <(echo "$SSH_KEY_PROD")'
+
+#     # tạo folder ~/.ssh
+#     - mkdir -p ~/.ssh
+
+#     # Scan lấy SSH Host key cho địa chỉ IP server
+#     # Được kết quả bao nhiêu thì thêm vào file known_hosts
+#     - ssh-keyscan -H $SSH_HOST_PROD >> ~/.ssh/known_hosts
+
+#     # Sửa lại quyền của file known_hosts
+#     - chmod 644 ~/.ssh/known_hosts
+
+#     # Thực hiện SSH vào server, login vào Registry, chuyển tới folder project
+#     # Down project, pull image về, up project và xoá đi image cũ
+#     - >
+#       ssh $SSH_USER_PROD@$SSH_HOST_PROD "docker login -u ${CI_REGISTRY_USER} -p
+#       ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}; cd ${PATH_TO_PROJECT}; docker-compose down; docker
+#       pull ${CI_REGISTRY_IMAGE}:latest; docker-compose up -d; docker image prune -f;"

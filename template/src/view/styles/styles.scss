@@ -1,0 +1,10 @@
+@use 'variable' as *;
+@use 'mixin' as *;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import './body.scss';
+
+@import './main-style/style_index.scss';
+@import './layout-style/styles-index.scss';
+@import './component-style/style-index.scss';

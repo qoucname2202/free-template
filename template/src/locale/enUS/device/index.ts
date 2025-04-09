@@ -1,0 +1,63 @@
+export default {
+  'device.router-name': 'Device',
+  'device.title': 'Device management',
+  'device-add.name': 'Add device',
+  'device-form-add': 'Add device',
+  'device-form-edit': 'Device update',
+  'device-edit.name': 'Device update',
+  'device.deviceCode': 'Device code',
+  'device.deviceName': 'Device name',
+  'device.province': 'Province/city',
+  'device.district': 'District',
+  'device.commune': 'Commune',
+  'device.address': 'Installation address',
+  'device.password': 'Password',
+  'device.confirmPassword': 'Confirm password',
+  'device.capacity': 'Capacity',
+  'device.status': 'Operating status',
+  'device.info.title': 'Device Information',
+  'device.history.title': 'History of bottle collection',
+
+  'device.code': 'Device code',
+  'device.name': 'Device name',
+  'device.specificAddress': 'Installation address',
+  'device.obtainedQuantity': 'The number of bottles collected',
+  'device.validQuantity': 'Number bottles of Aqua',
+  'device.invalidQuantity': 'Other brand bottles',
+  'device.containerStatus': 'Capacity',
+  'device.operationStatus': 'Operating status',
+  'device.action': 'Act',
+  'device-info.operationStatus': 'Status',
+
+  'device.longitude': 'Longitude',
+  'device.latitude': 'Latitude',
+
+  'device-info.name': 'Device Information',
+
+  'device.capacity-empty': 'Empty container',
+  'device.recycle-full': 'Full of trash',
+  'device.water-full': 'Full of water',
+  'device.bin-two-full': 'Full both bins',
+
+  'device.status.containerStatus':
+    '{status,select, 1 {Empty container} 2 {Full both bins} 3 {Full of trash} 4 {Full of water}  other {Unknown}}',
+  'device.status.operationStatus': '{status,select, 1 {Active} 2 {Stop operation} other {Unknown}}',
+
+  'device.history.time': 'Time',
+
+  'device-info.total-aqua': 'Total number bottles of Aqua',
+  'device-info.gift': 'Total bottle',
+  'device-info.brand-different': 'The total number of other brand bottles',
+
+  'device-info.time': 'Time',
+  'device-info.invalidQuantity': 'The number of bottles of other brand',
+  'device-info.validQuantity': 'The number of bottles is Aqua',
+  'device-info.obtainedQuantity': 'Total bottle',
+  'device-info.customer.nickName': 'Client',
+  'device.content.delete': 'Are you sure you want to delete this device?',
+  'device.title.delete': 'Delete the device',
+  'device.placeholder.latitude': 'Please enter the latitude',
+  'device.placeholder.longitude': 'Please enter the longitude',
+  'errors.device.name': 'Device name',
+  'errors.device': 'Device',
+};

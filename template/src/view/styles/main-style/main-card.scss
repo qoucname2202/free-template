@@ -1,0 +1,25 @@
+.main-card {
+  margin-left: 2rem;
+  background: #fff;
+  padding: 2rem 2.4rem 1rem 2.4rem;
+  border-radius: 1.8rem;
+  max-height: 88vh;
+  height: 88vh;
+  overflow-y: scroll;
+  @media (max-width: 1366px) {
+    max-height: 80vh;
+    height: 80vh;
+  }
+  h3.card-title {
+    font-weight: $font-weight-medium;
+    font-size: 2rem;
+    color: var(--colorPrimary);
+    margin-bottom: 1.6rem;
+    max-width: 90%;
+  }
+
+  .defaultTitle {
+    font-size: 3rem;
+    color: var(--colorPrimary);
+  }
+}

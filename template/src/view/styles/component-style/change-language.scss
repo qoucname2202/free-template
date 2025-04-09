@@ -1,0 +1,45 @@
+.language-wrapper {
+  width: 6rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .language-label {
+    padding-left: 4px;
+  }
+}
+
+.language-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.select-custom {
+  .ant-select-arrow {
+    margin-top: 0;
+    .anticon > svg {
+      color: var(--colorPrimary);
+    }
+  }
+
+  .ant-select,
+  .ant-select-single,
+  .ant-select:not(.ant-select-customize-input) {
+    .ant-select-selector {
+      border-radius: 8px;
+      height: 4rem;
+      padding: 0 0.5rem;
+      &:hover {
+        border-color: var(--colorTextSecondary);
+      }
+
+      .ant-select-selection-item {
+        padding: 0 0.5rem;
+        margin-right: 1.4rem;
+        font-weight: 500;
+        color: var(--colorTextSecondary);
+        line-height: 1.5;
+      }
+    }
+  }
+}

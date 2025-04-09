@@ -1,0 +1,55 @@
+.ant-btn,
+button.ant-btn.normal-button,
+.ant-modal-confirm-btns button.ant-btn,
+button.ant-btn.cancel-button,
+.normal-button {
+  min-width: 15rem;
+  min-height: 4.8rem;
+  border-radius: 0.8rem;
+  font-weight: bold;
+  font-size: $fs-2;
+  padding: 0;
+  transition: All 0.3s;
+  box-shadow: none;
+  background: var(--colorPrimary);
+  color: var(--colorTextLightSolid);
+}
+
+.delete-button {
+  // border: 1px solid var(--colorPrimary);
+  // color: var(--colorBgContainer);
+  // color: var(--colorPrimary);
+}
+
+button.ant-btn.disabled-button {
+  min-width: 15rem;
+  height: 4.8rem;
+  border-radius: 0.8rem;
+  font-weight: bold;
+  font-size: $fs-3;
+}
+
+button.ant-btn.bg-custom-button {
+  // background-color: var(--colorPrimary);
+  // color: var(--colorBgContainer);
+
+  // &:hover {
+  //   opacity: 0.8;
+  // }
+
+  transition: 0.2s;
+  font-weight: $font-weight-bold;
+  height: 4rem;
+  border: none;
+}
+
+
+.button-center__box {
+  text-align: center;
+  button {
+    &:first-child {
+      margin-right: 2rem;
+    }
+  }
+}
+

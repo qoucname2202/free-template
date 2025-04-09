@@ -1,0 +1,40 @@
+.avatar-uploader {
+  .upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    svg {
+      width: 1.8rem;
+    }
+  }
+
+  .ant-upload.ant-upload-select {
+    border: 1px solid rgba(87, 131, 198, 0.8) !important;
+    width: 20rem !important;
+    height: 15rem !important;
+    border-radius: 12px !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  .icon {
+    svg {
+      width: 4rem;
+      height: 4rem;
+      color: rgba(87, 131, 198, 0.8);
+    }
+  }
+  .btn {
+    width: 10rem;
+    height: 3.8rem;
+    background-color: var(--colorPrimary);
+    border-radius: 8px;
+    color: white;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+}

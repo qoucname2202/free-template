@@ -1,0 +1,46 @@
+.main-title-breadcrumb__box {
+  margin-top: 0.1rem;
+  .ant-typography {
+    font-size: 3.8rem;
+    margin-bottom: 3.8rem;
+    color: var(--colorPrimary);
+  }
+}
+
+//======Breadcrumb=========
+.breadcrumb__box {
+  display: flex;
+  align-items: center;
+  margin: 3rem 4rem 2rem 4rem;
+  font-weight: $font-weight-medium;
+  font-size: $fs-4;
+  line-height: 2.7rem;
+  color: var(--colorText);
+
+  a {
+    opacity: 0.8;
+    font-weight: $font-weight-bold;
+    color: var(--colorText);
+  }
+
+  .breadcrumb__li:first-child {
+    padding-left: 0;
+  }
+
+  .breadcrumb__last {
+    a {
+      opacity: 1;
+      color: var(--colorPrimary);
+    }
+  }
+
+  .breadcrumb__icon {
+    .anticon {
+      display: flex;
+      svg {
+        color: var(--colorText);
+        font-size: 2.1rem;
+      }
+    }
+  }
+}

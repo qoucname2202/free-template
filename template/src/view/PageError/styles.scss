@@ -1,0 +1,191 @@
+@import '../styles/variable.scss';
+@import '../styles/mixin.scss';
+
+.page-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  height: 100vh;
+  background-image: url('../../shared/assets/images/404.svg');
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center right 10%;
+  background-color: #fefefe;
+
+  @media only screen and (max-width: 576px) {
+    background: var(--colorPrimary);
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
+  .auth-wrapper {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    background-color: var(--colorPrimaryLight);
+    .content-form {
+      padding: 4rem 6rem;
+      /*background: #fefefe;*/
+      border-radius: 12px;
+      width: 48rem;
+      z-index: 1;
+      margin: auto;
+      @media only screen and (max-width: 820px) {
+        width: 40rem;
+      }
+      @media only screen and (max-width: 576px) {
+        padding: 4rem;
+        margin: 0 2rem;
+        width: 30rem;
+      }
+      /*logo component*/
+      .logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 6rem;
+        &__img {
+          width: 22rem;
+          object-fit: contain;
+          cursor: pointer;
+        }
+        &__text {
+          font-size: $fs-6;
+          font-weight: $font-weight-bold;
+          line-height: 4.4rem;
+          letter-spacing: 0em;
+        }
+      }
+      /*prefix icon*/
+      .site-form-item-icon {
+        color: var(--colorPrimary);
+      }
+      /*margin between each form item*/
+      .ant-form-item {
+        margin-bottom: 2px;
+      }
+      .ant-row {
+        @media only screen and (max-width: 576px) {
+          row-gap: 0.5rem !important;
+        }
+      }
+      .ant-col.ant-form-item-label.css-dev-only-do-not-override-1t75zue {
+        @media only screen and (max-width: 576px) {
+          padding: 0;
+        }
+      }
+      .ant-btn-default {
+        margin-left: 1rem;
+      }
+
+      /*remember & forget pass button wrapper*/
+      .form-buttons {
+        .ant-form-item-control-input-content {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+        }
+      }
+      /*submit button*/
+      .normal-button {
+        width: 100%;
+      }
+      .reverse-color-button {
+        width: 100%;
+        color: var(--colorPrimary);
+        background-color: var(--colorBgContainer);
+        border: 1px solid var(--colorPrimary);
+      }
+      .forgot__pass {
+        text-align: end;
+        display: inline-block;
+        align-items: flex-end;
+        a {
+          color: #005556;
+          font-weight: 300;
+          font-size: $fs-1;
+          text-decoration: underline;
+        }
+        @media only screen and (max-width: 576px) {
+          margin-bottom: 1rem;
+        }
+      }
+      .wrap_btn {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: 3rem;
+        @media only screen and (max-width: 576px) {
+          justify-content: center;
+        }
+      }
+    }
+  }
+
+  .wrap_title {
+    z-index: 1;
+  }
+  .main-title {
+    text-align: center;
+    font-weight: $font-weight-bold;
+    font-size: $fs-7;
+    margin-top: 0;
+    z-index: 1;
+    @media only screen and (max-width: 576px) {
+      text-align: center;
+      font-size: 2.6rem;
+    }
+  }
+  .sub-title {
+    margin: 2.5rem;
+    text-align: center;
+    font-size: $fs-5;
+    font-weight: $font-weight-semi-bold;
+    line-height: 3.3rem;
+    letter-spacing: 0em;
+  }
+
+  .description {
+    z-index: 1;
+  }
+
+  .ant-form-item-label > label {
+    color: #4d4d4d;
+  }
+
+  .ant-checkbox-wrapper {
+    color: #005556;
+  }
+
+  .ant-checkbox-inner {
+    border-color: #005556;
+  }
+
+  .ant-form-item-with-help .ant-form-item-explain {
+    text-align: left;
+  }
+
+  .desc {
+    margin: 2.5rem 0 1.5rem 0;
+    @media only screen and (max-width: 576px) {
+      text-align: center;
+    }
+  }
+
+  .text-desc {
+    font-size: 1.6rem;
+    margin-top: 2.5rem;
+
+    text-align: justify;
+  }
+  .text-desc-back {
+    font-size: 1.6rem;
+    margin-top: 2.5rem;
+
+    text-align: center;
+    margin-top: 2rem;
+    cursor: pointer;
+  }
+}
